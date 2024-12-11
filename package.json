@@ -24,7 +24,7 @@
   "scripts": {
     "start": "nodemon",
     "prettier": "npx prettier . --write",
-    "stop": "rm -rf node_modules",
+    "rmrf": "rm -rf node_modules",
     "reinstall": "bash shell/reinstall.sh"
   },
   "version": "1.0.0"
