@@ -1,0 +1,1 @@
+[{"url":"http://localhost:3080/api/crud/patterns","endpoint":"/patterns","table":"patterns","type":"TPatterns"},{"url":"http://localhost:3080/api/crud/files","endpoint":"/files","table":"files","type":"TFiles"}]
