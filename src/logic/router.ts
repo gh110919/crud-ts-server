@@ -5,13 +5,13 @@ export const router = (endpoint: string, controller: TController): Router => {
   return ((
     router: Router,
     endpoint: string,
-    controller: TController,
+    { create, read, update, delete: destroy }: TController
   ): Router => {
     return router
-      .post(`${endpoint}`, controller.create)
-      .get(`${endpoint}`, controller.read)
-      .put(`${endpoint}`, controller.update)
-      .patch(`${endpoint}`, controller.update)
-      .delete(`${endpoint}`, controller.delete);
+      .post(endpoint, create)
+      .get(endpoint, read)
+      .put(endpoint, update)
+      .patch(endpoint, update)
+      .delete(endpoint, destroy);
   })(Router(), endpoint, controller);
 };

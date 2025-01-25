@@ -5,7 +5,7 @@ const typeMap: { [key: string]: string } = {
   integer: "number",
   boolean: "boolean",
   foreign: "string",
-  timestamp: "Date",
+  timestamp: "string",
 };
 
 export const typing = (migrations: TMigrate[]): string => {

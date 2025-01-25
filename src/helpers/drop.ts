@@ -9,23 +9,11 @@ export const drop = async (req: Request, res: Response) => {
       console.log(`Таблица "${e.table}" успешно удалена!`);
     });
 
-    writeFileSync(
-      "src/assets/endpoints.json",
-      JSON.stringify([]),
-      "utf-8",
-    );
+    writeFileSync("src/assets/endpoints.json", JSON.stringify([]), "utf-8");
 
-    writeFileSync(
-      "src/assets/migrate.json",
-      JSON.stringify([]),
-      "utf-8",
-    );
+    writeFileSync("src/assets/migrate.json", JSON.stringify([]), "utf-8");
 
-    writeFileSync(
-      "src/assets/migrate.d.ts",
-      JSON.stringify(null),
-      "utf-8",
-    );
+    writeFileSync("src/assets/migrate.d.ts", "export {}", "utf-8");
 
     res.status(200).json({
       success: true,

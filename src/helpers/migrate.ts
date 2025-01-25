@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { writeFileSync } from "fs";
+import { Knex } from "knex";
 import { orm } from "../middleware/orm";
 import { typing } from "./typing";
-import { Knex } from "knex";
+import { writeFile } from "fs/promises";
 
 export type TMigrate = {
   table: string;
@@ -60,11 +60,27 @@ export const toCamelCase = (str: string): string => {
 
 export const migrate = async (req: Request, res: Response) => {
   try {
-    writeFileSync("src/assets/migrate.json", JSON.stringify(req.body), "utf-8");
+    await writeFile(
+      "src/assets/migrate.json",
+      JSON.stringify(req.body),
+      "utf-8"
+    );
 
-    writeFileSync("src/assets/migrate.d.ts", typing(req.body.create), "utf-8");
+    // await writeFile(
+    //   "src/assets/migrate.d.ts",
+    //   typing(req.body.create),
+    //   "utf-8"
+    // );/* баг */
 
-    writeFileSync(
+    await writeFile(
+      "src/assets/drop.json",
+      JSON.stringify({
+        delete: req.body.create.map((e: any) => ({ table: e.table })),
+      }),
+      "utf-8"
+    );
+
+    await writeFile(
       "src/assets/endpoints.json",
       JSON.stringify(
         req.body.create.map((e: { table: string }) => ({
@@ -89,7 +105,7 @@ export const migrate = async (req: Request, res: Response) => {
         );
         console.log(`Таблица "${e.table}" успешно создана!`);
       } else {
-        const columns = await orm(e.table).columnInfo();
+        const columns = await orm.read(e.table).columnInfo();
         console.log(`Существующие столбцы в таблице ${e.table}:`, columns);
 
         await orm.schema.alterTable(e.table, (table: Knex.AlterTableBuilder) =>
@@ -106,6 +122,7 @@ export const migrate = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Произошла ошибка при миграции:", error);
+
     res.status(500).json({
       success: false,
       message: "Произошла ошибка при миграции.",

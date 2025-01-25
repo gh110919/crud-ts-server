@@ -8,29 +8,27 @@ import { TRead, TReadReturn } from "../../types";
  */
 export const modelGet = <T>(table: string) => {
   return async (request?: TRead): Promise<TReadReturn<T>> => {
-    const { filters, pagination, sorting } = request || {};
-
-    const qb = orm(table);
+    const { filters, pagination, sorting } = request!;
+    let query = orm.read(table);
 
     if (filters) {
-      qb.where(filters);
+      query = orm.filtering(table, { ...filters });
     }
 
-    if (pagination?.limit !== undefined) {
-      qb.limit(pagination.limit);
-    }
-    if (pagination?.offset !== undefined) {
-      qb.offset(pagination.offset);
-    }
+    if (pagination) {
+      const { offset = 1, limit = 10 } = pagination;
 
-    if (sorting?.sortBy) {
-      qb.orderBy(sorting.sortBy, sorting.order || "asc");
+      query = orm.pagination(table, offset, limit);
     }
 
-    const payload = await qb;
+    if (sorting) {
+      const { sortBy, order = "asc" } = sorting;
+      query = orm.sorting(table, sortBy!, order);
+    }
 
-    const total = (await qb.count("* as count")).find((e) => e.count);
-
-    return pagination ? { payload, total: +total?.count! } : { ...payload };
+    return {
+      payload: await query,
+      total: await orm.count(table),
+    };
   };
 };
