@@ -1,0 +1,22 @@
+services:
+  service_postgres:
+    image: postgres
+    container_name: container_postgres
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - local
+    ports:
+      - "5432:5432/tcp"
+    volumes:
+      - volume_postgres:/home/volume_postgres
+    environment:
+      POSTGRES_USER: service_postgres_username
+      POSTGRES_PASSWORD: service_postgres_password
+      POSTGRES_DB: service_postgres_database
+networks:
+  local:
+    driver: bridge
+volumes:
+  volume_postgres:

@@ -1,19 +1,9 @@
-import { Request, Response } from "express";
+import { Req, Res } from "../../types";
 import { TService } from "../service";
-import { control } from "./control";
+import { responder } from "./responder";
 
-/**
- * Функция контроллера для удаления записи.
- * @param service - Сервис для обработки бизнес-логики.
- * @returns Функция для обработки HTTP-запроса на удаление записи.
- */
-export const controllerCut = <T>(service: TService<T>) => {
-  return async (request: Request, response: Response) => {
-    control<T | null>(
-      response,
-      service.delete({
-        id: String(request.params.id || request.query.id || request.body.id),
-      }),
-    );
+export const controllerCut = async <T>({ destroy }: TService<T>) => {
+  return async ({ query }: Req, res: Res) => {
+    await responder(res, destroy({ query }));
   };
 };

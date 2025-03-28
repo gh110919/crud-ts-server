@@ -1,34 +1,48 @@
-import { orm } from "../../middleware/orm";
+import { connection, orm } from "../../middlewares/orm";
 import { TRead, TReadReturn } from "../../types";
 
-/**
- * Функция модели для чтения записи.
- * @param table - Название таблицы в базе данных.
- * @returns Функция для чтения записи с поддержкой фильтрации, пагинации и сортировки.
- */
-export const modelGet = <T>(table: string) => {
-  return async (request?: TRead): Promise<TReadReturn<T>> => {
-    const { filters, pagination, sorting } = request!;
-    let query = orm.read(table);
+export const modelGet = async <T>(table: string) => {
+  return async ({ query }: TRead): Promise<TReadReturn<T>> => {
+    const {
+      filtering,
+      sorting,
+      pagination,
+      by,
+      order,
+      limit,
+      offset,
+      ...other
+    } = query!;
 
-    if (filters) {
-      query = orm.filtering(table, { ...filters });
+    try {
+      let builder = connection(table);
+
+      if (filtering) {
+        builder = builder.where(other);
+      }
+
+      if (sorting && by && order) {
+        builder = builder.orderBy(by, order);
+      }
+
+      if (pagination && limit && offset) {
+        builder = builder.limit(limit).offset(offset);
+      }
+
+      const [payload, size] = await Promise.all([builder, orm.count(table)]);
+
+      return {
+        meta: {
+          table: { name: table, size },
+          filtering: other,
+          sorting: { by, order },
+          pagination: { limit, offset },
+          count: payload.length,
+        },
+        payload,
+      };
+    } catch (error) {
+      throw new Error(String(error));
     }
-
-    if (pagination) {
-      const { offset = 1, limit = 10 } = pagination;
-
-      query = orm.pagination(table, offset, limit);
-    }
-
-    if (sorting) {
-      const { sortBy, order = "asc" } = sorting;
-      query = orm.sorting(table, sortBy!, order);
-    }
-
-    return {
-      payload: await query,
-      total: await orm.count(table),
-    };
   };
 };

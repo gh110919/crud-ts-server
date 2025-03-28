@@ -1,43 +1,43 @@
-import { ParamsDictionary, Request } from "express-serve-static-core";
-import { ParsedQs } from "qs";
+import { request, response } from "express";
 
-export type TypeArrayNull<T> = T | T[] | null;
+export type Req = typeof request;
+export type Res = typeof response;
 
 export type TCreate<T> = {
-  payload: T;
+  body: T;
 };
 
-export type TPagination = { limit?: number; offset?: number };
-
-export type TSorting = { sortBy?: string; order?: "asc" | "desc" };
-
-export type TFilters = {
-  [key: string]: string | number | boolean | Array<string | number> | undefined;
+export type TRead = {
+  query: Partial<{
+    filtering: boolean;
+    [key: string]: any;
+    sorting: boolean;
+    by: string;
+    order: string;
+    pagination: boolean;
+    limit: number;
+    offset: number;
+  }>;
 };
-
-export type TRequest = {
-  params: ParamsDictionary;
-  query: ParsedQs;
-  body: Request["body"];
-};
-
-export type TFPS = {
-  filters?: TFilters;
-  pagination?: TPagination;
-  sorting?: TSorting;
-};
-
-export type TRead = Partial<TFPS & TRequest>;
 
 export type TUpdate<T> = {
-  id: string;
-  payload: T;
+  query: Req["query"];
+  body: T;
 };
 
-export type TDelete = {
-  id: string;
+export type TDestroy = {
+  query: Req["query"];
 };
 
-export type TReadReturn<T> =
-  | { payload: TypeArrayNull<T>; total: number }
-  | TypeArrayNull<T>;
+export type Meta = {
+  table: { name: string; size: number };
+  filtering?: object;
+  sorting: { by?: string; order?: string };
+  pagination: { limit?: number; offset?: number };
+  count: number;
+};
+
+export type TReadReturn<T> = {
+  meta: Meta;
+  payload: T[];
+};

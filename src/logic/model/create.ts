@@ -1,25 +1,20 @@
-import { v4 } from "uuid";
+import { v7 } from "uuid";
+import { orm } from "../../middlewares/orm";
 import { TCreate } from "../../types";
-import { orm } from "../../middleware/orm";
 
-/**
- * Функция модели для создания записей.
- * @param table - Название таблицы в базе данных.
- * @returns Функция для создания новых записей.
- */
-export const modelSet = <T>(table: string) => {
-  return async ({ payload }: TCreate<T[]>): Promise<T[]> => {
-    const created_at = orm.fn.now();
-    const records = payload.map((item) => ({
-      ...item,
-      id: v4(),
-      created_at,
+export const modelSet = async <T>(table: string) => {
+  return async ({ body }: TCreate<T[]>): Promise<T[]> => {
+    const records = body.map((e: T) => ({
+      ...e,
+      _id: v7(),
+      _created_at: orm.fn.now(),
     }));
 
-    await orm(table).insert(records);
-    return await orm(table).whereIn(
-      "id",
-      records.map(({ id }) => id),
+    await orm.create(table, records);
+
+    return await orm.read(table).whereIn(
+      "_id",
+      records.map(({ _id }) => _id)
     );
   };
 };

@@ -1,16 +1,9 @@
-import { Request, Response } from "express";
+import { Req, Res } from "../../types";
 import { TService } from "../service";
-import { control } from "./control";
+import { responder } from "./responder";
 
-/**
- * Функция контроллера для создания записей.
- * @param service - Сервис для обработки бизнес-логики.
- * @returns Функция для обработки HTTP-запроса на создание записей.
- */
-export const controllerSet = <T>(service: TService<T>) => {
-  return async (request: Request, response: Response) => {
-    const payload = Array.isArray(request.body) ? request.body : [request.body];
-
-    control<T[]>(response, service.create({ payload }));
+export const controllerSet = async <T>({ create }: TService<T>) => {
+  return async ({ body }: Req, res: Res) => {
+    await responder(res, create({ body: Array.isArray(body) ? body : [body] }));
   };
 };

@@ -1,67 +1,74 @@
-import { json, Request, Response, urlencoded } from "express";
-import { readFileSync } from "fs";
+import { config } from "dotenv";
+import { json, urlencoded } from "express";
+import { createServer } from "http";
 import { networkInterfaces } from "os";
-import { SecureContextOptions } from "tls";
-import { drop } from "./helpers/drop";
-import { endpoints } from "./helpers/endpoints";
-import { migrate } from "./helpers/migrate";
-import { types } from "./helpers/types";
-import { crud } from "./middleware/crud";
-import { imports } from "./middleware/imports";
-import { store } from "./middleware/s3/store";
-import { purge } from "./middleware/s3/purge";
+import { killProcessOnPort } from "./helpers/kill-process";
+import { basicAuth } from "./middlewares/basicAuth";
+import { crud, initCrud, TEndpoint } from "./middlewares/crud";
+import { drop } from "./middlewares/drop";
+import { endpoints } from "./middlewares/endpoints";
+import { gql_mw } from "./middlewares/gql";
+import { migrate } from "./middlewares/migrate";
+import { types } from "./middlewares/types";
+import { Req, Res } from "./types";
+import { readFile } from "fs/promises";
 
 (async function () {
+  const { PORT } = config({ path: ".local/.env" }).parsed!;
   const express = (await import("express")).default();
-  const http = (await import("http")).default;
-  const https = (await import("https")).default;
   const cors = (await import("cors")).default;
+
+  await killProcessOnPort(+PORT);
+  await initCrud();
 
   const listener = async () => {
     try {
       express
-        .options("*", cors({ origin: "*" }))
-        .set("trust proxy", "linklocal")
         .use(cors())
         .use(json())
         .use(urlencoded({ extended: true }))
-        .delete("/api/drop", drop)
-        .patch("/api/migrate", migrate)
-        .get("/api/endpoints", endpoints)
-        .get("/api/types", types)
-        .post("/api/store", store)
-        .delete("/api/purge", purge)
-        .use("/api/crud", crud(imports.endpoints))
-        .get("/", (_: Request, res: Response) => {
+        .set("trust proxy", "linklocal")
+        .delete("/api/drop", /* basicAuth, */ drop)
+        .patch("/api/migrate", /* basicAuth, */ migrate)
+        .get("/api/endpoints", /* basicAuth, */ endpoints)
+        .get("/api/types", /* basicAuth, */ types)
+        .use("/api/crud", /* basicAuth, */ crud)
+        .use("/api/gql", /* basicAuth, */ gql_mw)
+        .get("/", (_: Req, res: Res) => {
           res.status(200).send(true);
         });
     } catch (error) {
       console.error(`Ошибка экспресс сервера: ${error}`);
+
+      throw new Error(String(error));
     }
   };
 
-  const ssl: SecureContextOptions = {
-    /* самоподписные сертификаты сгенерированы на локальный хост и выданы на 1000 лет */
-    key: readFileSync(".local/private_key.pem"),
-    cert: readFileSync(".local/fullchain.pem"),
-  };
+  createServer(express).listen(PORT, listener);
 
-  const ports = {
-    http: 3080,
-    https: 3443,
-  };
-
-  http.createServer(express).listen(ports.http, listener);
-  https.createServer(ssl, express).listen(ports.https, listener);
-
-  const host = () => {
+  const urls = async () => {
     const interfaces = Object.values(networkInterfaces()).flat();
     const ip = interfaces.find((e) => e?.family === "IPv4" && !e?.internal);
-    return {
-      http: `http://${ip?.address}:${ports.http}`,
-      https: `https://${ip?.address}:${ports.https}`,
-    };
+
+    const endpoints = JSON.parse(
+      await readFile("src/assets/endpoints.json", "utf8")
+    );
+
+    const modifiedEndpoints = endpoints.map((e: TEndpoint) => {
+      if (e && e.url.length !== 0) {
+        const url = new URL(e.url);
+        url.hostname = ip?.address!;
+        url.port = PORT;
+        return { url: url.toString() };
+      }
+    });
+
+    console.table(
+      modifiedEndpoints.map((e: { url: string }) => {
+        return e && e.url.length !== 0 ? e.url : "";
+      })
+    );
   };
 
-  console.log(host());
+  await urls();
 })();

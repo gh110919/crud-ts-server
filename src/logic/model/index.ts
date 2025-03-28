@@ -1,27 +1,19 @@
-import { TCreate, TRead, TReadReturn, TUpdate, TDelete } from "../../types";
+import { TCreate, TDestroy, TRead, TReadReturn, TUpdate } from "../../types";
 import { modelSet } from "./create";
 import { modelCut } from "./delete";
 import { modelGet } from "./read";
 import { modelPut } from "./update";
 
-/**
- * Типы модели.
- */
 export type TModel<T> = {
-  create: ({ payload }: TCreate<T[]>) => Promise<T[]>;
-  read: (request?: TRead) => Promise<TReadReturn<T>>;
-  update: ({ id, payload }: TUpdate<T>) => Promise<T | null>;
-  delete: ({ id }: TDelete) => Promise<T | null>;
+  create: ({ body }: TCreate<T[]>) => Promise<T[]>;
+  read: ({ query }: TRead) => Promise<TReadReturn<T>>;
+  update: ({ query, body }: TUpdate<T>) => Promise<T[]>;
+  destroy: ({ query }: TDestroy) => Promise<T[]>;
 };
 
-/**
- * Функция для создания модели.
- * @param table - Название таблицы в базе данных.
- * @returns Объект с функциями модели.
- */
-export const model = <T>(table: string): TModel<T> => ({
-  create: modelSet<T>(table),
-  read: modelGet<T>(table),
-  update: modelPut<T>(table),
-  delete: modelCut<T>(table),
+export const model = async <T>(table: string): Promise<TModel<T>> => ({
+  create: await modelSet<T>(table),
+  read: await modelGet<T>(table),
+  update: await modelPut<T>(table),
+  destroy: await modelCut<T>(table),
 });

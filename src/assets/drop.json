@@ -1,1 +1,151 @@
-{"delete":[{"table":"patterns"},{"table":"files"}]}
+{
+  "delete": [
+    {
+      "table": "files"
+    },
+    {
+      "table": "eateries"
+    },
+    {
+      "table": "restaurants"
+    },
+    {
+      "table": "disabledDates"
+    },
+    {
+      "table": "eateriesAdmins"
+    },
+    {
+      "table": "halls"
+    },
+    {
+      "table": "likes"
+    },
+    {
+      "table": "menu"
+    },
+    {
+      "table": "openingHours"
+    },
+    {
+      "table": "photos"
+    },
+    {
+      "table": "ratings"
+    },
+    {
+      "table": "viewsCount"
+    },
+    {
+      "table": "table"
+    },
+    {
+      "table": "orders"
+    },
+    {
+      "table": "guests"
+    },
+    {
+      "table": "nutrients"
+    },
+    {
+      "table": "menuRating"
+    },
+    {
+      "table": "dataProcessing"
+    },
+    {
+      "table": "users"
+    },
+    {
+      "table": "establishmentNotFound"
+    },
+    {
+      "table": "orderCounter"
+    },
+    {
+      "table": "menuItemsBoxArr"
+    },
+    {
+      "table": "orderTime"
+    },
+    {
+      "table": "favourites"
+    },
+    {
+      "table": "menus"
+    },
+    {
+      "table": "eateries_restaurants"
+    },
+    {
+      "table": "eateries_disabledDates"
+    },
+    {
+      "table": "eateries_halls"
+    },
+    {
+      "table": "eateries_likes"
+    },
+    {
+      "table": "eateries_menuItems"
+    },
+    {
+      "table": "eateries_openingHours"
+    },
+    {
+      "table": "eateries_photos"
+    },
+    {
+      "table": "halls_photos"
+    },
+    {
+      "table": "halls_tables"
+    },
+    {
+      "table": "menu_nutrients"
+    },
+    {
+      "table": "menu_ratingsArrs"
+    },
+    {
+      "table": "ratings_users"
+    },
+    {
+      "table": "likes_users"
+    },
+    {
+      "table": "menuRating_users"
+    },
+    {
+      "table": "users_favourites"
+    },
+    {
+      "table": "users_orders"
+    },
+    {
+      "table": "users_userDataProcessings"
+    },
+    {
+      "table": "orders_menuItemsBoxs"
+    },
+    {
+      "table": "table_guests"
+    },
+    {
+      "table": "table_orders"
+    },
+    {
+      "table": "menuItemsBoxArr_items"
+    },
+    {
+      "table": "users_eateriesAdmins"
+    },
+    {
+      "table": "eateries_ratings"
+    },
+    {
+      "table": "eateries_viewsCount"
+    }
+  ]
+}

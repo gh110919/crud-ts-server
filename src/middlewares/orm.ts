@@ -1,14 +1,17 @@
 import { config } from "dotenv";
 import knex from "knex";
 
-const { PG, MY } = config({
-  path: ".local/.env",
-}).parsed!;
+const { PG } = config({ path: ".local/.env" }).parsed!;
 
 export const connection = knex({
   client: "pg",
   connection: PG,
   useNullAsDefault: true,
+  log: {
+    warn: console.warn,
+    error: console.error,
+    debug: console.log,
+  },
 });
 
 class ORM {
@@ -18,22 +21,20 @@ class ORM {
   read = (table: string) => {
     return connection(table);
   };
-  update = (table: string, where: object, update: object) => {
+  upgrade = (table: string, where: object, update: object) => {
     return connection(table).where(where).update(update);
   };
-  delete = (table: string, where: object) => {
+  destroy = (table: string, where: object) => {
     return connection(table).where(where).delete();
   };
   filtering = (table: string, where: object) => {
     return connection(table).where(where);
   };
-  pagination = (table: string, offset: number, limit: number) => {
-    return connection(table)
-      .limit(limit)
-      .offset((offset - 1) * limit);
+  sorting = (table: string, by: string, order: string) => {
+    return connection(table).orderBy(by, order);
   };
-  sorting = (table: string, column: string, order: "asc" | "desc") => {
-    return connection(table).orderBy(column, order);
+  pagination = (table: string, limit: number, offset: number) => {
+    return connection(table).limit(limit).offset(offset);
   };
   count = async (table: string) => {
     return (await connection(table)).length;

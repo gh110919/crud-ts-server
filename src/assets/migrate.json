@@ -1,1 +1,1 @@
-{"create":[{"fields":{"created_at":"timestamp","description":"text","id":"string","pattern":"string","updated_at":"timestamp"},"table":"patterns"},{"fields":{"fieldname":"string","originalname":"string","encoding":"string","mimetype":"string","size":"integer","id":"string","url":"string","upload_date":"string"},"table":"files"}]}
+{}

@@ -1,23 +1,29 @@
 {
   "author": "",
   "dependencies": {
+    "@apollo/server": "^4.11.3",
     "@aws-sdk/client-s3": "^3.735.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-basic-auth": "^1.2.1",
+    "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6",
+    "graphql-tools": "^9.0.13",
     "knex": "^3.1.0",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
     "nodemon": "^3.1.7",
     "pg": "^8.13.1",
     "prettier": "^3.4.2",
+    "sqlite3": "^5.1.7",
     "uuid": "^11.0.3"
   },
   "description": "",
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/k6": "^0.57.0",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2"
   },
@@ -26,10 +32,11 @@
   "main": "index.js",
   "name": "crud-ts-server",
   "scripts": {
-    "start": "nodemon",
+    "_install": "bash shell/install.sh",
+    "_uninstall": "bash shell/delete.sh",
     "prettier": "npx prettier . --write",
-    "rmrf": "rm -rf node_modules",
-    "reinstall": "bash shell/reinstall.sh"
+    "start": "nodemon",
+    "test": "%userprofile%\\k6\\k6 run src/tests/test.ts"
   },
   "version": "1.0.0"
 }

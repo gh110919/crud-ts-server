@@ -1,1 +1,1 @@
-export type TPatterns={created_at:string;description:any;id:string;pattern:string;updated_at:string;};export type TFiles={buffer:string;destination:string;encoding:string;fieldname:string;filename:string;id:string;mimetype:string;originalname:string;path:string;size:number;stream:string;upload_date:string;url:string;};export type TypeMap={TPatterns:TPatterns;TFiles:TFiles;};
+export type TypeMap = {};
