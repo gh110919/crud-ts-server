@@ -32,12 +32,12 @@
   "main": "index.js",
   "name": "crud-ts-server",
   "scripts": {
-    "_install": "bash shell/install.sh",
-    "_uninstall": "bash shell/delete.sh",
-    "container": "docker compose up -d",
+    "_install": "bash cmd/install.sh",
+    "_uninstall": "bash cmd/delete.sh",
+    "container": "bash cmd/up.sh",
     "prettier": "npx prettier . --write",
     "start": "nodemon",
-    "test": "bash shell/k6.sh"
+    "test": "bash cmd/k6.sh"
   },
   "type": "module",
   "version": "1.0.0"
