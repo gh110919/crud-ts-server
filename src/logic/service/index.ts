@@ -1,15 +1,14 @@
-import { TCreate, TDestroy, TRead, TReadReturn, TUpdate } from "../../types";
 import { TModel } from "../model";
-import { serviceSet } from "./create";
-import { serviceCut } from "./delete";
-import { serviceGet } from "./read";
-import { servicePut } from "./update";
+import { serviceSet, TServiceSet } from "./service-set";
+import { serviceCut, TServiceCut } from "./service-cut";
+import { serviceGet, TServiceGet } from "./service-get";
+import { servicePut, TServicePut } from "./service-put";
 
 export type TService<T> = {
-  create: ({ body }: TCreate<T[]>) => Promise<T[]>;
-  read: ({ query }: TRead) => Promise<TReadReturn<T>>;
-  update: ({ query, body }: TUpdate<T>) => Promise<T[]>;
-  destroy: ({ query }: TDestroy) => Promise<T[]>;
+  create: Awaited<TServiceSet<T>>;
+  read: Awaited<TServiceGet<T>>;
+  update: Awaited<TServicePut<T>>;
+  destroy: Awaited<TServiceCut<T>>;
 };
 
 export const service = async <T>(model: TModel<T>): Promise<TService<T>> => ({

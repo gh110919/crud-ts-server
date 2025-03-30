@@ -7,3 +7,5 @@ export const controllerCut = async <T>({ destroy }: TService<T>) => {
     await responder(res, destroy({ query }));
   };
 };
+
+export type TControllerCut<T> = ReturnType<typeof controllerCut<T>>;

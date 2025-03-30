@@ -10,3 +10,5 @@ export const modelCut = async <T>(table: string) => {
     return item;
   };
 };
+
+export type TModelCut<T> = ReturnType<typeof modelCut<T>>;

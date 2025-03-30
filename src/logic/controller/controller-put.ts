@@ -7,3 +7,5 @@ export const controllerPut = async <T>({ update }: TService<T>) => {
     await responder(res, update({ query, body }));
   };
 };
+
+export type TControllerPut<T> = ReturnType<typeof controllerPut<T>>;

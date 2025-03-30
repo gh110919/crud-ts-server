@@ -7,3 +7,5 @@ export const controllerGet = async <T>({ read }: TService<T>) => {
     await responder(res, read({ query }));
   };
 };
+
+export type TControllerGet<T> = ReturnType<typeof controllerGet<T>>;

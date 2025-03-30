@@ -1,1 +1,12 @@
-{}
+{
+  "create": [
+    {
+      "fields": {
+        "_created_at": "timestamp",
+        "_id": "string",
+        "_updated_at": "timestamp"
+      },
+      "table": ""
+    }
+  ]
+}

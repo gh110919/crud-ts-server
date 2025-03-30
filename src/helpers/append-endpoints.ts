@@ -12,7 +12,7 @@ export const appendEndpoints = async (req: Req) => {
     req.body.create.forEach((e: { table: string }) => {
       const endpoint = {
         url: `${req.protocol}://${req.get("host")}/api/crud/${e.table}`,
-        endpoint: `/api/crud/${e.table}`,
+        endpoint: `/${e.table}`,
         table: e.table,
         type: `${e.table.charAt(0).toUpperCase()}${toCamelCase(e.table.slice(1))}`,
       };

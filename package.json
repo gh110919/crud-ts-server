@@ -34,9 +34,11 @@
   "scripts": {
     "_install": "bash shell/install.sh",
     "_uninstall": "bash shell/delete.sh",
+    "container": "docker compose up -d",
     "prettier": "npx prettier . --write",
     "start": "nodemon",
-    "test": "%userprofile%\\k6\\k6 run src/tests/test.ts"
+    "test": "bash shell/k6.sh"
   },
+  "type": "module",
   "version": "1.0.0"
 }

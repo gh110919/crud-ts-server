@@ -7,3 +7,5 @@ export const controllerSet = async <T>({ create }: TService<T>) => {
     await responder(res, create({ body: Array.isArray(body) ? body : [body] }));
   };
 };
+
+export type TControllerSet<T> = ReturnType<typeof controllerSet<T>>;

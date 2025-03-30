@@ -10,11 +10,12 @@ export const modelSet = async <T>(table: string) => {
       _created_at: orm.fn.now(),
     }));
 
+    const ids = records.map(({ _id }) => _id);
+
     await orm.create(table, records);
 
-    return await orm.read(table).whereIn(
-      "_id",
-      records.map(({ _id }) => _id)
-    );
+    return await orm.read(table).whereIn("_id", ids);
   };
 };
+
+export type TModelSet<T> = ReturnType<typeof modelSet<T>>;

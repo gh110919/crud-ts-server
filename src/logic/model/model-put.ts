@@ -12,3 +12,5 @@ export const modelPut = async <T>(table: string) => {
     return await orm.filtering(table, { ...query });
   };
 };
+
+export type TModelPut<T> = ReturnType<typeof modelPut<T>>;

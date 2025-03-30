@@ -1,5 +1,4 @@
 import { writeFile } from "fs/promises";
-import { orm } from "./orm";
 import { deleteMigrates } from "../helpers/deleteMigrates";
 import { Req, Res } from "../types";
 
@@ -30,6 +29,22 @@ export const drop = async (req: Req, res: Res) => {
           type: "",
         },
       ]),
+      "utf-8"
+    );
+    await writeFile(
+      "/src/assets/migrate.json",
+      JSON.stringify({
+        create: [
+          {
+            fields: {
+              _created_at: "timestamp",
+              _id: "string",
+              _updated_at: "timestamp",
+            },
+            table: "",
+          },
+        ],
+      }),
       "utf-8"
     );
 

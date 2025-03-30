@@ -6,10 +6,10 @@ import { readFileSync } from "fs";
 import { gql } from "graphql-tag";
 import { resolve } from "path";
 import { TypeMap } from "../assets/migrate";
-import { modelSet } from "../logic/model/create";
-import { modelCut } from "../logic/model/delete";
-import { modelGet } from "../logic/model/read";
-import { modelPut } from "../logic/model/update";
+import { modelSet } from "../logic/model/model-set";
+import { modelCut } from "../logic/model/model-cut";
+import { modelGet } from "../logic/model/model-get";
+import { modelPut } from "../logic/model/model-put";
 import { imports } from "./imports";
 
 export const gql_mw = async (req: any, res: any, next: NextFunction) => {

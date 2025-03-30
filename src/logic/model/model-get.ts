@@ -46,3 +46,5 @@ export const modelGet = async <T>(table: string) => {
     }
   };
 };
+
+export type TModelGet<T> = ReturnType<typeof modelGet<T>>;

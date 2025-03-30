@@ -12,6 +12,7 @@ import { migrate } from "./middlewares/migrate";
 import { types } from "./middlewares/types";
 import { Req, Res } from "./types";
 import { readFile } from "fs/promises";
+import axios from "axios";
 
 (async function () {
   const { PORT } = config({ path: ".local/.env" }).parsed!;
@@ -46,29 +47,13 @@ import { readFile } from "fs/promises";
 
   createServer(express).listen(PORT, listener);
 
-  const urls = async () => {
-    const interfaces = Object.values(networkInterfaces()).flat();
-    const ip = interfaces.find((e) => e?.family === "IPv4" && !e?.internal);
+  const { address } = Object.values(networkInterfaces())
+    .flat()
+    .find(({ family, internal }: any) => family === "IPv4" && !internal)!;
 
-    const endpoints = JSON.parse(
-      await readFile("src/assets/endpoints.json", "utf8")
-    );
-
-    const modifiedEndpoints = endpoints.map((e: TEndpoint) => {
-      if (e && e.url.length !== 0) {
-        const url = new URL(e.url);
-        url.hostname = ip?.address!;
-        url.port = PORT;
-        return { url: url.toString() };
-      }
-    });
-
-    console.table(
-      modifiedEndpoints.map((e: { url: string }) => {
-        return e && e.url.length !== 0 ? e.url : "";
-      })
-    );
-  };
-
-  await urls();
+  axios.get(`http://${address}:${PORT}/api/endpoints`).then((r) => {
+    if (r.data.success) {
+      console.table(r.data.message);
+    }
+  });
 })();
